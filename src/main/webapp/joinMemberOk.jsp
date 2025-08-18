@@ -24,16 +24,23 @@
 		//memberDto.setMembername(mname);
 		//memberDto.setMemberage(mage);
 		//memberDto.setMemberemail(memail);
-	
+		
+		
 		MemberDao memberDao = new MemberDao();
-	
-		int joinResult = memberDao.insertMember(memberDto);
-		// 1(성공) 또는 0(실패) 반환
-		if(joinResult == MemberDao.MEMBER_JOIN_SUCCESS) {
-			out.println("<script>alert('회원 가입 성공!');</script>");
-			//response.sendRedirect("login.jsp");
+		
+		int idCheck = memberDao.confirmId(memberDto.getMemberid());
+		
+		if(idCheck == MemberDao.MEMBER_ID_EXISTENT) { //이미 아이디 존재->가입불가
+			out.println("<script>alert('회원 가입 실패! 가입하시려는 아이디가 존재합니다.');history.go(-1);</script>");	
 		} else {
-			out.println("<script>alert('회원 가입 실패!');history.go(-1);</script>");
+			int joinResult = memberDao.insertMember(memberDto);
+			// 1(성공) 또는 0(실패) 반환
+			if(joinResult == MemberDao.MEMBER_JOIN_SUCCESS) {
+				out.println("<script>alert('회원 가입 성공!');</script>");
+				//response.sendRedirect("login.jsp");
+			} else {
+				out.println("<script>alert('회원 가입 실패!');history.go(-1);</script>");
+			}
 		}
 	
 	%>
