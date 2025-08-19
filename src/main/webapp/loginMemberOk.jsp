@@ -21,8 +21,10 @@
 			out.println("<script>alert('회원 로그인 성공!');</script>");
 		} else {
 			out.println("<script>alert('회원 로그인 실패!아이디 또는 비밀번호가 일치하지 않습니다.');history.go(-1);</script>");
-		}
-	
+		}	
 	%>
+	<h3>
+		<a href="modifyMember.jsp">회원 정보 수정으로 바로가기</a>
+	</h3>
 </body>
 </html>
