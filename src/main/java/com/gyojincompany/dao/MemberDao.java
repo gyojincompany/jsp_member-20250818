@@ -24,6 +24,8 @@ public class MemberDao {
 	public static final int LOGIN_FAIL = 0;
 	public static final int MEMBER_ID_EXISTENT = 1;
 	public static final int MEMBER_ID_NONEXISTENT = 0;
+	public static final int MEMBER_DELETE_SUCCESS = 1;
+	public static final int MEMBER_DELETE_FAIL = 0;
 	
 	public int insertMember(MemberDto memberDto) { //회원 가입 메서드
 		
@@ -161,6 +163,47 @@ public class MemberDao {
 			}
 		}
 		return sqlResult; //1로 반환되면 아이디 가입 불가, 0으로 반환되면 아이디 가입 가능
+	}
+	
+	public int deleteMember(String deleteId) {
+		
+		String sql ="DELETE FROM membertbl WHERE memberid = ?";
+		
+		int sqlResult = 0;
+		
+		try {
+			Class.forName(driverName); //MySQL 드라이버 클래스 불러오기			
+			conn = DriverManager.getConnection(url, username, password);
+			//커넥션이 메모리 생성(DB와 연결 커넥션 conn 생성)
+			
+			pstmt = conn.prepareStatement(sql); //pstmt 객체 생성(sql 삽입)
+			pstmt.setString(1, deleteId);			
+			
+			sqlResult = pstmt.executeUpdate(); //성공하면 sqlResult 값이 1로 변환
+			// SQL문을 DB에서 실행->삭제 성공하면 1이 반환, 실패면 0이 반환
+			
+			
+		} catch (Exception e) {
+			System.out.println("DB 에러 발생! 회원 가입 실패!");
+			e.printStackTrace(); //에러 내용 출력
+		} finally { //에러의 발생여부와 상관 없이 Connection 닫기 실행 
+			try {
+				if(pstmt != null) { //stmt가 null 이 아니면 닫기(conn 닫기 보다 먼저 실행)
+					pstmt.close();
+				}				
+				if(conn != null) { //Connection이 null 이 아닐 때만 닫기
+					conn.close();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (sqlResult == 1) {
+			return MEMBER_DELETE_SUCCESS; //1
+		} else {
+			return MEMBER_DELETE_FAIL; //0
+		}		
 	}
 
 }
